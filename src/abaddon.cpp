@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <gtkmm.h>
+#include <nlohmann/json.hpp>
 #include "platform.hpp"
 #include "audio/manager.hpp"
 #include "discord/discord.hpp"
@@ -364,6 +365,56 @@ int Abaddon::StartGTK() {
 #endif
 
     RunFirstTimeDiscordStartup();
+
+#ifdef TEST_MESSAGE
+    Glib::signal_timeout().connect_once([this]{
+        auto user_json = R"({
+            "id": "100000000000000000",
+            "username": "example_user",
+            "discriminator": "0",
+            "avatar": null
+        })";
+
+        UserData userData{};
+        from_json(nlohmann::json::parse(user_json), userData);
+
+        GetDiscordClient().InsertUser(userData.ID, userData);
+
+        auto channel_id_str = std::to_string(GetActiveChannelID());
+
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // TODO: AOOOO LEGGI QUAAAA
+        // In pratica bisogna sistemare il problema con il caricamento delle immagini... in pratica quando cerca di scaricare un'immagine si freeza tutto...
+        // per l'avatar ho risolto semplicemente evitando di fare questa operazione, ma dato che la feature si fonda sulle immagini, sarebbe meglio risolvere
+        // vai a guardare la funzione ImageManager::LoadFromURL()
+        auto test_json = R"({"op": 0, "t": "MESSAGE_CREATE", "d":{
+            "type":0,
+            "content":"foo",
+            "mentions":[],
+            "mention_roles":[],
+            "attachments":[{"id":"1363148902315982921","filename":"20250418_194059.jpg","size":571148,"url":"https://cdn.discordapp.com/attachments/740235717598249063/1363148902315982921/20250418_194059.jpg?ex=6804fad8&is=6803a958&hm=bebe6b869a102be9d0ab490b80e1f6e961325a31b2997428be7334f9378677a2&","proxy_url":"https://media.discordapp.net/attachments/740235717598249063/1363148902315982921/20250418_194059.jpg?ex=6804fad8&is=6803a958&hm=bebe6b869a102be9d0ab490b80e1f6e961325a31b2997428be7334f9378677a2&","width":1638,"height":1228,"content_type":"image/jpeg","content_scan_version":1,"placeholder":"2EgKDYYNppa2OpZmaKh3mD/JhQup","placeholder_version":1}],
+            "embeds":[],
+            "timestamp":"2025-04-15T17:07:25.777000+00:00","edited_timestamp":null,
+            "flags":0,
+            "components":[],
+            "id":"1361749772188254230",
+            "channel_id":")" + channel_id_str + R"(",
+            "author":)" + user_json + R"(,
+            "pinned":false,
+            "mention_everyone":false,
+            "tts":false
+        }})";
+
+        GatewayMessage test_msg{};
+        from_json(nlohmann::json::parse(test_json), test_msg);
+        GetDiscordClient().HandleGatewayMessageCreate(test_msg);
+    }, 500);
+#endif // TEST_MESSAGE
 
     return m_gtk_app->run(*m_main_window);
 }

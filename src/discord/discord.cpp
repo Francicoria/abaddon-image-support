@@ -92,6 +92,12 @@ bool DiscordClient::IsStoreValid() const {
     return m_store.IsValid();
 }
 
+#ifdef TEST_MESSAGE
+void DiscordClient::InsertUser(Snowflake id, const UserData &user) {
+    m_store.SetUser(id, user);
+}
+#endif // TEST_MESSAGE
+
 std::unordered_set<Snowflake> DiscordClient::GetGuilds() const {
     return m_store.GetGuilds();
 }

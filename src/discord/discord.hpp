@@ -22,6 +22,8 @@
 #undef GetMessage
 #endif
 
+#define TEST_MESSAGE
+
 class DiscordClient {
     friend class Abaddon;
 
@@ -32,6 +34,9 @@ public:
     bool IsStarted() const;
     bool IsStoreValid() const;
 
+#ifdef TEST_MESSAGE
+    void InsertUser(Snowflake id, const UserData &user);
+#endif // TEST_MESSAGE
     std::unordered_set<Snowflake> GetGuilds() const;
     const UserData &GetUserData() const;
     const UserGuildSettingsData &GetUserGuildSettings() const;

@@ -950,7 +950,9 @@ ChatMessageHeader::ChatMessageHeader(const Message &data)
         m_static_avatar = pb->scale_simple(AvatarSize, AvatarSize, Gdk::INTERP_BILINEAR);
         m_avatar.property_pixbuf() = m_static_avatar;
     };
+#ifndef TEST_MESSAGE
     img.LoadFromURL(avatar_url, sigc::track_obj(cb, *this));
+#endif // TEST_MESSAGE
 
     if (author->HasAnimatedAvatar(data.GuildID)) {
         auto cb = [this](const Glib::RefPtr<Gdk::PixbufAnimation> &pb) {

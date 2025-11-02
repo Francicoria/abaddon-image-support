@@ -44,7 +44,9 @@ void ChatList::SetActiveChannel(Snowflake id) {
 
 void ChatList::ProcessNewMessage(const Message &data, bool prepend) {
     auto &discord = Abaddon::Get().GetDiscordClient();
+#ifndef TEST_MESSAGE
     if (!discord.IsStarted()) return;
+#endif // TEST_MESSAGE
     if (!prepend) m_ignore_next_upper = true;
 
     // delete preview message when gateway sends it back
